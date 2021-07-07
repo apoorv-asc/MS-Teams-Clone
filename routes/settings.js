@@ -29,7 +29,7 @@ router.get("/new_team",isLoggedIn,function(req,res){
 router.post('/new_team',isLoggedIn,async (req,res)=>{
     try{
         const team=new Team({
-            team_name:req.body.team_name
+            team_name:req.body.team_name,avatar:req.body.avatar
         })
         for(x=0;x<(req.body.members).length;x++){
             let userinfo =await UserData.findOne({email:(req.body.members)[x]});

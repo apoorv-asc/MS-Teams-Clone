@@ -12,13 +12,7 @@ const TeamSchema =new mongoose.Schema({
     }],
     avatar:{
         type:String,
-    },
-    incoming:[{
-        call:{
-            type:String,
-            required:false
-        }
-    }]
+    }
 });
 
 module.exports = Team = mongoose.model('Team',TeamSchema);

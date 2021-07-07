@@ -5,19 +5,21 @@
 <h3>Old Calls</h3>
 <% (calls).forEach((call)=>{ %>
     <% if(call.count==0){ %>
-        <a href="#">Join call with id <%= call.callID %></a>
+        <a href="#">This call was started by <%= call.host %></a>
+        <br>
     <% } %>
 <% }) %>
 
-<h3>Incoming Calls</h3>
+<h3>Ongoing Calls</h3>
 <% (calls).forEach((call)=>{ %>
     <% if(call.count>0){ %>
-        <a href="/team/<%= call.team_name %>/<%= call.callID %>">Join call with id <%= call.callID %></a>
+        <a href="/team/<%= call.team_name %>/<%= call.callID %>">Join call started by <%= call.host %></a>
+        <br>
     <% } %>
 <% }) %>
         
         <h3>Start new Call</h3>
-        <a href="/team/<%= team %>/start_call">Click me</a>
+        <a href="/team/<%= team %>/start_call/<%= user.username %>">Click me</a>
 </body>
 <script>
     console.log("Check ");

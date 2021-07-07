@@ -23,7 +23,7 @@ app.use("/peerjs", peerServer);
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json({extended: false}));
 
-// @@@@@@@@@@@@@@@@@@@@@@@@@ Databases @@@@@@@@@@@@@@@@@@@@@@@@@@@
+// @@@@@@@@@@@@@@@@@@@@@@@@@@@ Databases @@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 var User= require('./models/user');
 const UserData = require('./models/UserData');
@@ -86,7 +86,6 @@ app.get('/fail',(req,res)=>{
 // ===========================================================
 
 io.on("connection", (socket) => {
-    console.log("Another device connected")
     socket.on("join-room", (roomId, userId) => {
         socket.join(roomId);
         socket.broadcast.to(roomId).emit("user-connected", userId);

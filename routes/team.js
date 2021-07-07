@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const isLoggedIn = require('../middleware/auth');
 
-const Team = require('../models/team');
+const UserData = require('../models/UserData')
 const Meet = require('../models/meet');
 
 // @route   GET team/:name
@@ -24,36 +24,24 @@ router.get('/:name',(req,res)=>{
 // @route   GET team/:name/start_call
 // @desc    Starts a new group call
 // @access  Public
-router.get('/:name/start_call',async (req,res)=>{
+router.get('/:name/start_call/:username',async (req,res)=>{
     let id=uuidv4();
     try{
-        Team.findOne({team_name:req.params.name},(err,team)=>{
+        const user = await UserData.findOne({email:req.params.username});
+        const meet = new Meet({
+            team_name:req.params.name,
+            callID:id,
+            count:0,
+            host:user.username
+        });
+        meet.save((err)=>{
             if(err){
-                console.log(err);
+                console.log("Error in meet");
                 res.send(err);
             }else{
-                team.incoming.unshift({call:id});
-                const meet = new Meet({
-                    team_name:req.params.name,
-                    callID:id,
-                    count:0
-                });
-                meet.save((err)=>{
-                    if(err){
-                        console.log("Error in meet");
-                        res.send(err);
-                    }else{
-                        team.save((err)=>{
-                            if(err){
-                                res.send(err);
-                            }else
-                                res.redirect(`/team/${req.params.name}/${id}`);
-                        });
-                    }
-                });
-                
+                res.redirect(`/team/${req.params.name}/${id}`);
             }
-        })
+        });
     }catch(err){
         console.log(err);
     }
