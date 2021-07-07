@@ -1,0 +1,11 @@
+<%- include("partials/header"); %>
+<%- include("partials/leftoptions"); %>
+<div>
+    <button type="button" class="btn btn-outline-primary"><a href="/settings/new_team">Add new teams</a></button>
+</div>
+<br>
+<% (userinfo.team_name).forEach((team)=>{ %>
+    <a href="/team/<%= team.name %>">
+        <%= team.name %>
+    </a>
+<% }) %>

@@ -1,0 +1,24 @@
+<%- include("partials/header"); %>
+<div class="container">
+    <form action="/settings/new_team" method="POST">
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Team Name</label>
+            <input type="text" name="team_name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter the name of the team">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Avatar</label>
+            <input type="text" name="avatar" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter the link of the avatar">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Members</label><br>
+            <select name="members" multiple>
+                <% users.forEach((user)=>{ %>
+                    <option value="<%= user.username %>"><%= user.username %></option>
+                <% }) %>
+            </select>
+        </div>
+        <a href="/"><button type="button" class="btn btn-danger">Cancel</button></a>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    
+</div>

@@ -1,0 +1,24 @@
+<%- include("partials/header"); %>
+<%- include("partials/leftoptions"); %>
+
+
+<h3>Old Calls</h3>
+<% (calls).forEach((call)=>{ %>
+    <% if(call.count==0){ %>
+        <a href="#">Join call with id <%= call.callID %></a>
+    <% } %>
+<% }) %>
+
+<h3>Incoming Calls</h3>
+<% (calls).forEach((call)=>{ %>
+    <% if(call.count>0){ %>
+        <a href="/team/<%= call.team_name %>/<%= call.callID %>">Join call with id <%= call.callID %></a>
+    <% } %>
+<% }) %>
+        
+        <h3>Start new Call</h3>
+        <a href="/team/<%= team %>/start_call">Click me</a>
+</body>
+<script>
+    console.log("Check ");
+</script>
