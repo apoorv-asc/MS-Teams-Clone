@@ -28,6 +28,7 @@ app.use(express.json({extended: false}));
 var User= require('./models/user');
 const UserData = require('./models/UserData');
 const Meet = require('./models/meet');
+const Team = require('./models/team');
 
 // ++++++++++++++++++ IMPORT for Authentication ++++++++++++++++++++++++
 
@@ -69,13 +70,13 @@ app.use('/team',require('./routes/team'));
 // ==================== TESTING PURPOSE ======================
 
 app.get('/',isLoggedIn,async (req,res)=>{
-    UserData.findOne({email:(res.locals.user.username)},(err,userinfo)=>{
+    Team.find({"members.member":res.locals.user.username},(err,teams)=>{
         if(err){
             console.log(err);
             res.redirect('/login');
         }
         else
-            res.render('home',{userinfo:userinfo})
+            res.render('home',{teams:teams})
     });
 })
 

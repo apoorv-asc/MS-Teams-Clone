@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const Router = express.Router();
+const router = express.Router();
 
 
 app.use(express.urlencoded({ extended: true }))
@@ -33,7 +33,7 @@ const isLoggedIn = require('../middleware/auth')
 // @route   GET registeration/
 // @desc    Redirects to registration page
 // @access  Public
-Router.get('/',(req,res)=>{
+router.get('/',(req,res)=>{
     res.render("register");
 })
 
@@ -41,7 +41,7 @@ Router.get('/',(req,res)=>{
 // @route   POST registeration/
 // @desc    Registers a new user
 // @access  Public
-Router.post('/',function(req,res){
+router.post('/',function(req,res){
     User.register(new User({username:req.body.username}),req.body.password, function(err){
         if(err){
             console.log(err.message);
@@ -58,11 +58,18 @@ Router.post('/',function(req,res){
 // @route   POST registeration/user_info
 // @desc    Saves the inforamtion of the newly created user to the DB
 // @access  Private
-Router.post('/user_info',isLoggedIn,(req,res)=>{
-    const User = new UserData({email:req.body.email,username:req.body.username})
-    User.save();
+router.post('/user_info',isLoggedIn,async (req,res)=>{
+    const User = new UserData(
+        {
+            email:req.body.email,
+            username:req.body.username,
+            phone:req.body.phone,
+            organization:req.body.organization
+        }
+    )
+    await User.save();
     res.redirect('/');
 })
 
 
-module.exports = Router;
+module.exports = router;

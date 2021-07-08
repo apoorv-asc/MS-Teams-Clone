@@ -4,8 +4,34 @@
     <button type="button" class="btn btn-outline-primary"><a href="/settings/new_team">Add new teams</a></button>
 </div>
 <br>
-<% (userinfo.team_name).forEach((team)=>{ %>
-    <a href="/team/<%= team.name %>">
-        <%= team.name %>
-    </a>
+
+<div class="row">
+    <% (teams).forEach((team)=>{ %>
+    <div class="col-md-2.7">
+    
+        <div style="background-color: brown;" class="card">
+            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+              <img
+                src="<%= team.avatar %>"
+                class="img-fluid"
+              />
+              <a href="#!">
+                <div class="mask" style="background-color: rgba(117, 31, 31, 0.15);"></div>
+              </a>
+            </div>
+            <div class="card-body">
+                <span style="text-align: center;" class="card-title">
+                    <a href="/team/<%= team.team_name %>">
+                        <%= team.team_name %>
+                    </a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 <% }) %>

@@ -9,6 +9,10 @@ const UserData = require('../models/UserData');
 const isLoggedIn = require('../middleware/auth')
 
 
+router.get('/',(req,res)=>{
+    res.render('settings');
+})
+
 // @route   GET settings/new_team
 // @desc    Creates a new Team
 // @access  Private
@@ -50,5 +54,21 @@ router.post('/new_team',isLoggedIn,async (req,res)=>{
         console.log(err+" <== Error");
     }
 })
+
+router.get('/reset',(req,res)=>{
+    res.render("PassReset");
+})
+
+router.post('/reset',(req,res)=>{
+    User.findByUsername(res.locals.user.username).then((sanitizedUser)=>{
+        if (sanitizedUser){
+            sanitizedUser.setPassword(req.body.pass, function(){
+                sanitizedUser.save();
+                res.send('Password changed');
+            });
+        }
+    })
+})
+
 
 module.exports = router;

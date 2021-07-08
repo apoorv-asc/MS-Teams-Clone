@@ -8,6 +8,14 @@ const UserDataSchema =new mongoose.Schema({
         type:String,
         required:true
     },
+    phone:{
+        type:String,
+        required:true
+    },
+    organization:{
+        type:String,
+        required:true
+    },
     team_name:[{
         name:{
             type:String,

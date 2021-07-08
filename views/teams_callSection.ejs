@@ -1,26 +1,48 @@
 <%- include("partials/header"); %>
 <%- include("partials/leftoptions"); %>
 
-
-<h3>Old Calls</h3>
-<% (calls).forEach((call)=>{ %>
-    <% if(call.count==0){ %>
-        <a href="#">This call was started by <%= call.host %></a>
-        <br>
-    <% } %>
-<% }) %>
-
+<br>
 <h3>Ongoing Calls</h3>
+<% c=0 %>
 <% (calls).forEach((call)=>{ %>
     <% if(call.count>0){ %>
         <a href="/team/<%= call.team_name %>/<%= call.callID %>">Join call started by <%= call.host %></a>
         <br>
+    <% }else{c=c+1} %>
+<% }) %>
+<% if(c==calls.length){ %>
+<p>No active calls</p>
+
+<% }  %>
+<br>
+<h3>Start new Call</h3>
+<a class="btn btn-info" href="/team/<%= team %>/start_call/<%= user.username %>">Click me</a>
+<br><br>
+<h3>Old Calls</h3>
+<div class="row" style="display:flex;flex-wrap:wrap">
+<% (calls).forEach((call)=>{ %>
+    <% if(call.count==0){ %>
+        <div class="col-md-4">
+            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                <div class="card-header">Old Call</div>
+                <div class="card-body">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Action
+                        </button>
+                        <div class="dropdown-menu">
+                          <a class="dropdown-item" href="#">Chat</a>
+                          <a class="dropdown-item" href="#">Attendance </a>
+                        </div>
+                    </div>
+                    <br>
+                    <p class="card-text">Call Started by <%= call.host %></p>
+                </div>
+            </div>
+        </div>
+        
+        <br>
     <% } %>
 <% }) %>
-        
-        <h3>Start new Call</h3>
-        <a href="/team/<%= team %>/start_call/<%= user.username %>">Click me</a>
+</div>
 </body>
-<script>
-    console.log("Check ");
-</script>

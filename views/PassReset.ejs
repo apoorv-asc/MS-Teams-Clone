@@ -1,0 +1,7 @@
+<%- include("partials/header"); %>
+<%- include("partials/leftoptions"); %>
+
+<form action="/settings/reset" method="POST">
+    <input type="password" name="pass" required>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
