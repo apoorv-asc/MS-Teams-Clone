@@ -1,0 +1,59 @@
+<%- include("partials/header"); %>
+<%- include("partials/leftoptions"); %>
+<br>
+<div class="row">
+    <div class="col-2">
+        <div class="sidebar">
+            <div class="sidebar-wrapper">
+                <a href="#" class="nav_logo"></a>
+                <div class="nav_list">
+                    <img src="<%= team.avatar %>" width="200" height="200"><br><br>
+                    <h2><b>TedX </b></h2>
+                    <ul>
+                        <li><a href="/team/<%= team.team_name %>">Calls</a></li>
+                        <li><a href="#">Chat</a></li>
+                        <li><a href="/team/info/<%= team.team_name %>">Team Info</a></li>
+                        <li><a class="active" href="#">Manage</a></li>
+                        <li><a href="/team/leave_team/<%= team.team_name %>">Leave team</a></li>
+                      </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <form action="/settings/manage_team/<%= team.team_name %>" method="POST">
+            <h5>Team Name</h5>
+            <div class="form-group">
+                <input required name="new_teamname" class="item form-control" type="text" value="<%= team.team_name %>" placeholder="Team Name">
+            </div>
+            <h5>Avatar Link</h5>
+            <div class="form-group">
+                <input required name="new_avatar" class="item form-control" type="text" value="<%= team.avatar %>" placeholder="Avatar Link">
+            </div>
+            <h5>Add New Members</h5>
+            <div class="form-group">
+                <div class="input-group">
+                    <select class="form-control" name="add_members" multiple>
+                        <% addUsers.forEach((user)=>{ %>
+                            <option value="<%= user.email %>"><%= user.email %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            <h5>Remove Members</h5>
+            <div class="form-group">
+                <div class="input-group">
+                    <select class="form-control" name="remove_members" multiple>
+                        <% (team.members).forEach((member)=>{ %>
+                            <option value="<%= member.member %>"><%= member.member %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-success" type="submit">Save Changes</button>
+        </form>
+        <br>
+        <button class="btn btn-danger" onclick="window.location.href='/team/<%= team.team_name %>'">Back</button>
+    </div>
+    <div class="col-2"></div>
+</div>

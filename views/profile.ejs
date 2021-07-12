@@ -1,0 +1,59 @@
+<%- include("partials/header"); %>
+<%- include("partials/leftoptions"); %>
+
+<div class="row">
+    <div class="col-2"> 
+        <div class="sidebar">
+        <div class="sidebar-wrapper">
+            <a href="#" class="nav_logo"></a>
+            <div class="nav_list">
+                <img src="https://zbyhoo.files.wordpress.com/2011/07/me_pixel_bright_bg.png?w=584" width="200" height="200"><br><br>
+                
+                <ul>
+                    <li><a class="active" href="#">Profile</a></li>
+                    <li><a href="/settings/reset">Change Password</a></li>
+                    </ul>
+            </div>
+        </div>
+        </div> 
+    </div>
+    <div class="col-10">
+        <h2 style="text-align: center;">Your Profile</h2>
+
+        <div style="margin-left: 40px; margin-right: 40px;">
+            <form action="/settings/profile" method="POST">
+
+                <div class="form-group">
+                    <h5>Username</h5>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="username" value="<%= user.username %>" placeholder="Username" class="form-control">
+                </div>
+                <div class="form-group">
+                    <h5>Email</h5>
+                </div>
+                <div class="form-group">
+                    <input type="text" style="background-color: rgb(209, 208, 208);" name="" value="<%= user.email %>" disabled class="form-control">
+                    <small id="emailHelp" class="form-text text-muted">Changing the registered email address is not allowed</small>
+                </div>
+                <div class="form-group">
+                    <h5>Organization</h5>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="organization" value="<%= user.organization %>" class="form-control" placeholder="Organization">
+                </div>
+                <div class="form-group">
+                    <h5>Contact Number</h5>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="phone" value="<%= user.phone %>" class="form-control" placeholder="Contact Number">
+                </div>
+                
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success">
+                </div>
+
+            </form>
+        </div>
+   </div>
+</div>

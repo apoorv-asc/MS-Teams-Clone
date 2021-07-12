@@ -1,0 +1,38 @@
+<%- include("partials/header"); %>
+<%- include("partials/leftoptions"); %>
+<style>
+    table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #f38181;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #81f5a2;
+}
+tr:nth-child(odd) {
+  background-color: #f58181;
+}
+</style>
+<div>
+    <table>
+        <tr>
+            <th>Participants Email</th>
+            <th>Entry/Exit</th>
+            <th>Details about Entry/Exit</th>
+        </tr>
+        <% (meet.attndc).forEach((info)=>{ %> 
+        <tr>
+            <td><%= info.participant %></td>
+            <td><%= info.objective %></td>
+            <td><%= info.time %></td>
+        </tr>
+        <% }) %>
+    </table>
+</div>

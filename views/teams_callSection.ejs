@@ -1,48 +1,100 @@
 <%- include("partials/header"); %>
 <%- include("partials/leftoptions"); %>
 
-<br>
-<h3>Ongoing Calls</h3>
-<% c=0 %>
-<% (calls).forEach((call)=>{ %>
-    <% if(call.count>0){ %>
-        <a href="/team/<%= call.team_name %>/<%= call.callID %>">Join call started by <%= call.host %></a>
-        <br>
-    <% }else{c=c+1} %>
-<% }) %>
-<% if(c==calls.length){ %>
-<p>No active calls</p>
-
-<% }  %>
-<br>
-<h3>Start new Call</h3>
-<a class="btn btn-info" href="/team/<%= team %>/start_call/<%= user.username %>">Click me</a>
-<br><br>
-<h3>Old Calls</h3>
-<div class="row" style="display:flex;flex-wrap:wrap">
-<% (calls).forEach((call)=>{ %>
-    <% if(call.count==0){ %>
-        <div class="col-md-4">
-            <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-                <div class="card-header">Old Call</div>
-                <div class="card-body">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Action
-                        </button>
-                        <div class="dropdown-menu">
-                          <a class="dropdown-item" href="#">Chat</a>
-                          <a class="dropdown-item" href="#">Attendance </a>
-                        </div>
-                    </div>
-                    <br>
-                    <p class="card-text">Call Started by <%= call.host %></p>
+<div class="row">
+    
+     <div class="col-2"> 
+         <div class="sidebar">
+            <div class="sidebar-wrapper">
+                <a href="#" class="nav_logo"></a>
+                <div class="nav_list">
+                    <img src="<%= teamInfo.avatar %>" width="200" height="200"><br><br>
+                    <h2><b><%= teamInfo.team_name %></b></h2>
+                    <ul>
+                        <li><a class="active" href="#">Calls</a></li>
+                        <li><a href="#">Chat</a></li>
+                        <li><a href="/team/info/<%= teamInfo.team_name %>">Team Info</a></li>
+                        <li><a href="/settings/manage_team/<%= teamInfo.team_name %>">Manage</a></li>
+                        <li><a href="/team/leave_team/<%= teamInfo.team_name %>">Leave team</a></li>
+                    </ul>
                 </div>
             </div>
-        </div>
-        
+        </div> 
+    </div>
+
+
+    <div class="col-10"> 
+    <div style="margin-top: 40px;">
+
+        <h3>Ongoing Calls</h3>
+        <% c=0 %>
+        <% (calls).forEach((call)=>{ %>
+            <% if(call.count>0){ %>
+                <a href="/team/<%= call.team_name %>/<%= call.callID %>">Join call started by <%= call.host %></a>
+                <br>
+            <% }else{c=c+1} %>
+        <% }) %>
+        <% if(c==calls.length){ %>
+        <p>No active calls</p>
+
+        <% }  %>
         <br>
-    <% } %>
-<% }) %>
+        <h3>Start new Call</h3>
+        <a class="btn btn-info" href="/team/<%= teamInfo.team_name %>/start_call/<%= user.username %>">Click me</a>
+        <br><br>
+        
+        <p id="old-calls"><button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+           Show old calls
+        </button></p>
+
+        <div class="collapse" id="collapseExample">
+            
+                <% c=0 %>
+                <div class="row" style="display:flex;flex-wrap:wrap">
+                    <% (calls).forEach((call)=>{ %>
+                        <% if(call.count<=0){ %>
+                            <% c=c+1 %>
+                            <div class="col-md-4">
+                                <p><%= call.id %></p>
+                                <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">Old Call</div>
+                                    <div class="card-body">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                            </button>
+                                            <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="#">Chat</a>
+                                            <a class="dropdown-item" href="/team/attndc/<%= call.id %>">Attendance </a>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <p class="card-text">Call Started by <%= call.host %></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <br>
+                        <% } %>
+                    <% }) %>
+                    <% if(c==0){ %>
+                        <p style="margin-left: 12px;">No calls done yet</p>
+                    <% } %>
+                </div>
+
+            
+        </div>
+       
+    </div>
+    </div> 
 </div>
+
+
 </body>
+
+<script type="text/javascript">
+    document.getElementById("myButton").onclick = function () {
+        location.href = "/settings/manage_team/<%= teamInfo.team_name %>";
+    };
+    
+</script>

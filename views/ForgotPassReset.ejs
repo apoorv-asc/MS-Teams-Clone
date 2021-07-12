@@ -19,26 +19,21 @@
                     <div class="text-center">
                         <img src="https://i.ibb.co/rshckyB/car-key.png" alt="car-key" border="0">
                         <h2 class="text-center">Forgot Password?</h2>
-                        <p>You can reset your password here.</p>
-                        <form action="/registeration/forgot_password" method="POST">
+                        <p>Enter new password here</p>
+                        <form action="/registeration/change_password" method="POST">
                             <div class="form-group">
                                 <div class="input-group">
-                                    <select class="form-control" id="sel1">
-                                        <option selected="true" disabled="disabled">Reset password using ?</option>
-                                        <option>Link on Email</option>
-                                    </select>
+                                    <input required value="<%= email %>" id="forgetAnswer" name="email" placeholder="Enter Email" class="form-control"  type="text">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <!-- <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span> -->
-                                    <input required id="forgetAnswer" name="email" placeholder="Enter Email" class="form-control"  type="text">
+                                    <input required id="forgetAnswer" name="password" placeholder="Enter new Password" class="form-control"  type="text">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <input name="btnForget" class="btn btn-lg btn-primary btn-block btnForget" value="Reset Password" type="submit">
                             </div>
-
                         </form>
                     </div>
                 </div>

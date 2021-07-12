@@ -6,8 +6,7 @@ const TeamSchema =new mongoose.Schema({
     },
     members:[{
         member:{
-            type:String,
-            unique:true
+            type:String
         }
     }],
     avatar:{

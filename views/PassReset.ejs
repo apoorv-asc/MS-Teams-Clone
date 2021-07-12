@@ -1,7 +1,55 @@
 <%- include("partials/header"); %>
 <%- include("partials/leftoptions"); %>
 
-<form action="/settings/reset" method="POST">
-    <input type="password" name="pass" required>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<div class="row">
+    <div class="col-2">
+        <div class="sidebar">
+            <div class="sidebar-wrapper">
+                <a href="#" class="nav_logo"></a>
+                <div class="nav_list">
+                    <img src="https://zbyhoo.files.wordpress.com/2011/07/me_pixel_bright_bg.png?w=584" width="200" height="200"><br><br>
+                    
+                    <ul>
+                        <li><a href="#">Profile</a></li>
+                        <li><a class="active" href="#">Change Password</a></li>
+                        </ul>
+                </div>
+            </div>
+            </div> 
+    </div>
+    <div class="col-10">
+        <!-- <form action="/settings/reset" method="POST">
+            <input type="password" name="pass" required>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form> -->
+        <br><br>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="text-center">
+                    <img src="https://i.ibb.co/rshckyB/car-key.png" alt="car-key" border="0">
+                    <h2 class="text-center">Forgot Password?</h2>
+                    <p>Enter new password here</p>
+                    <div class="container">
+                        <form action="/registeration/change_password" method="POST">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input  onkeydown="return false" value="<%= user.username %>" id="forgetAnswer" name="email" class="form-control"  type="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input required id="forgetAnswer" name="password" placeholder="Enter new Password" class="form-control"  type="password">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input name="btnForget" class="btn btn-lg btn-primary btn-block btnForget" value="Reset Password" type="submit">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

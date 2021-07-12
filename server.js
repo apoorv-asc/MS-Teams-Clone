@@ -29,6 +29,7 @@ var User= require('./models/user');
 const UserData = require('./models/UserData');
 const Meet = require('./models/meet');
 const Team = require('./models/team');
+const Chat = require('./models/Chat');
 
 // ++++++++++++++++++ IMPORT for Authentication ++++++++++++++++++++++++
 
@@ -52,8 +53,10 @@ passport.deserializeUser(User.deserializeUser());
 
 // +++++++++++++++++++ MIDDLEWARES +++++++++++++++++++++++++
 
-const isLoggedIn = require('./middleware/auth')
+const isLoggedIn = require('./middleware/auth');
 
+// Passes the email address of logged in user to every route. 
+// If no user is logged in it passes null to every route
 app.use(function(req,res,next){
     res.locals.user=req.user;
     next();
@@ -66,6 +69,7 @@ app.use('/registeration',require('./routes/registeration'));
 app.use('/logout',require('./routes/logout'));
 app.use('/settings',require('./routes/settings'));
 app.use('/team',require('./routes/team'));
+app.use('/chat',require('./routes/chat'));
 
 // ==================== TESTING PURPOSE ======================
 
@@ -87,6 +91,8 @@ app.get('/fail',(req,res)=>{
 // ===========================================================
 
 io.on("connection", (socket) => {
+
+    // Chat during Video Call (room.ejs)
     socket.on("join-room", (roomId, userId) => {
         socket.join(roomId);
         socket.broadcast.to(roomId).emit("user-connected", userId);
@@ -95,8 +101,29 @@ io.on("connection", (socket) => {
           io.to(roomId).emit("createMessage", message);
         });
     });
-});
 
+    // Personal Chat (chat.ejs)
+    socket.on('join',(options,callback)=>{
+        socket.join(options.roomId);
+        
+        socket.on('sendMessage',async (data, callback) => {
+            console.log(data.roomId);
+            const chat =await Chat.findOne({ChatID:data.roomId});
+            console.log(chat.msg);
+            chat.msg.push({
+                username:data.username,
+                message:data.message,
+                timestamp:data.time,
+            })
+            await chat.save();
+
+            io.to(data.roomId).emit('Show-Message', {username:data.username, msg:data.message})
+            callback()
+        })
+
+    })
+
+});
 
 
 

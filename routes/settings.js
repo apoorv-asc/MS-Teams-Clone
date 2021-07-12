@@ -8,9 +8,24 @@ const UserData = require('../models/UserData');
 
 const isLoggedIn = require('../middleware/auth')
 
+router.get('/profile',async (req,res)=>{
+    const user =await UserData.findOne({email:res.locals.user.username})
+    res.render('profile',{user:user});
+})
 
-router.get('/',(req,res)=>{
-    res.render('settings');
+router.post('/profile',async (req,res)=>{
+    try{
+        var user =await UserData.findOne({email:res.locals.user.username});
+        user.username=req.body.username;
+        user.organization = req.body.organization;
+        user.phone = req.body.phone;
+    
+        await user.save();
+        res.redirect('/');
+    }
+    catch(err){
+        res.send(err)
+    }
 })
 
 // @route   GET settings/new_team
@@ -49,7 +64,7 @@ router.post('/new_team',isLoggedIn,async (req,res)=>{
         }
         team.save();
     
-        res.send('Done')
+        res.redirect('/')
     }catch(err){
         console.log(err+" <== Error");
     }
@@ -68,6 +83,60 @@ router.post('/reset',(req,res)=>{
             });
         }
     })
+})
+
+router.get('/manage_team/:team',async (req,res)=>{
+    let team = await Team.findOne({team_name:req.params.team});
+    let users = await UserData.find({"team_name.name":{$not: {$regex:`${req.params.team}`}}})
+    res.render('manage_team',{team:team,addUsers:users})
+})
+
+router.post('/manage_team/:team',async (req,res)=>{
+    var team=await Team.findOne({team_name:req.params.team});
+    // Change team name and avatar
+    team.team_name=req.body.new_teamname;
+    team.avatar = req.body.new_avatar;
+
+    // Reflect team name change in UserData
+    var users=await UserData.find({"team_name.name":req.params.team});
+    users.forEach((user)=>{
+        (user.team_name).forEach((team)=>{
+            if(team.name==req.params.team)
+                team.name=req.body.new_teamname;
+        })
+    })
+
+    // Deleting members from Team
+    var cnt=0;
+    (team.members).forEach((member)=>{
+        if((member.member).includes(remove_members)){
+            (team.members).splice(cnt,cnt+1);
+        }else{
+            cnt=cnt+1;
+        }
+    })
+
+    // Deleting team from UserData
+    var cnt=0;
+    users.forEach(async (user)=>{
+        if((user.email).includes(remove_member)){
+            (user.team_name).forEach((team)=>{
+                if(team.name==req.body.new_teamname){
+                    (team.name).splice(cnt,cnt+1);
+                }else{
+                    cnt=cnt+1;
+                }
+            })
+        }
+        await user.save();
+    })
+
+    // Adding new member in Team
+    for(x=0;x<req.body.add_member.length;x++){
+        team.members.unshift(req.body.add_member[x])
+    }
+    await team.save();
+    res.redirect('/');
 })
 
 

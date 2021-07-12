@@ -19,7 +19,12 @@ const MeetSchema =new mongoose.Schema({
     },
     host:{
         type:String
-    }
+    },
+    attndc:[{
+        participant:{type: String},
+        objective:{type:String},
+        time:{type:String}
+    }]
 });
 
 module.exports = Meet = mongoose.model('Meet',MeetSchema);
