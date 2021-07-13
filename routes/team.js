@@ -98,11 +98,12 @@ router.get('/info/:team',isLoggedIn,async (req,res)=>{
 // @route   GET team/attndc/:callID
 // @desc    Displays the attendance of the video call
 // @access  Private
-router.get('/attndc/:callID',isLoggedIn,async (req,res)=>{
+router.get('/attndc/:team/:callID',isLoggedIn,async (req,res)=>{
+    var team = await Team.findOne({team_name:req.params.team});
     var meet =await Meet.findById(req.params.callID);
     // Renders to the page which shows list of all the participants who entered the meeting
     // along with the time when the joined and left it
-    res.render('attendance',{meet:meet});
+    res.render('attendance',{team:team,meet:meet});
 })
 
 

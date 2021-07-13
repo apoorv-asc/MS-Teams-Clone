@@ -1,3 +1,4 @@
+// Contains information about various meetings (Video Call)
 const mongoose = require('mongoose');
 const MeetSchema =new mongoose.Schema({
     team_name:{

@@ -339,7 +339,11 @@
                     <li><a href="/team/<%= team.team_name %>">Calls</a></li>
                     <li><a href="#" class="active">Chat</a></li>
                     <li><a href="/team/info/<%= team.team_name %>">Team Info</a></li>
-                    <li><a href="/settings/manage_team/<%= team.team_name %>">Manage</a></li>
+                    <% if(user.username === team.host){ %>
+                        <li><a href="/settings/manage_team/<%= team.team_name %>">Manage</a></li>
+                      <% }else{ %>
+                        <li onclick="alert('Only host can access this');" ><a href="#">Manage</a></li>
+                      <% } %>
                     <li><a href="/team/leave_team/<%= team.team_name %>">Leave team</a></li>
                 </ul>
 

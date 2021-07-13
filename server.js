@@ -10,14 +10,14 @@ const peerServer = ExpressPeerServer(server, {
   debug: true,
 });
 
-const moment = require('moment');
+const moment = require('moment'); // Library that helps in printing time in a more user friendly manner
 
-const connectDB = require('./config/db');
+const connectDB = require('./config/db'); // Connects to MongoDB database
 connectDB();
 
 
 app.set("view engine","ejs");
-app.use(express.static("public"));
+app.use(express.static("public")); // Allows the use of files present in public directory
 app.use("/peerjs", peerServer);
 
 
@@ -72,8 +72,8 @@ app.use('/settings',require('./routes/settings'));
 app.use('/team',require('./routes/team'));
 app.use('/chat',require('./routes/chat'));
 
-// ==================== TESTING PURPOSE ======================
-
+// ==================== Home Screen ======================
+// @Access Private
 app.get('/',isLoggedIn,async (req,res)=>{
     Team.find({"members.member":res.locals.user.username},(err,teams)=>{
         if(err){
@@ -83,10 +83,6 @@ app.get('/',isLoggedIn,async (req,res)=>{
         else
             res.render('home',{teams:teams})
     });
-})
-
-app.get('/fail',(req,res)=>{
-    res.send("Failed");
 })
 
 // ===========================================================
@@ -99,6 +95,7 @@ io.on("connection", (socket) => {
         socket.broadcast.to(roomId).emit("user-connected", userId);
 
         socket.on("message",async (message) => {
+            // Reads the chat from Database whose ChatID = roomID and appends the recieved message to it.
             var chat =await Chat.findOne({ChatID:roomId});
             console.log(roomId);
             chat.msg.push({
@@ -106,10 +103,14 @@ io.on("connection", (socket) => {
                 timestamp:moment().format('h:mm a'),
                 username:message.user
             });
+            // Saves the chat along with the new message
             await chat.save();
             console.log('Message Saved');
-          io.to(roomId).emit("createMessage", message);
-          io.to(roomId).emit('Show-Message', {username:message.user, msg:message.msg})
+            // Displays the messages on the right side of the video call
+            io.to(roomId).emit("createMessage", message);
+            // Displays the message in the view chat option that can be accessed from team_callSection page
+            // even during the video call
+            io.to(roomId).emit('Show-Message', {username:message.user, msg:message.msg})
         });
     });
 
@@ -126,8 +127,9 @@ io.on("connection", (socket) => {
                 timestamp:data.time,
             })
             await chat.save();
-
+            // Displays the message in the chat page
             io.to(data.roomId).emit('Show-Message', {username:data.username, msg:data.message})
+            // Displays the message on the right side of the video call
             io.to(data.roomId).emit("createMessage", {msg:data.message,user:data.username});
             callback()
         })
@@ -137,7 +139,7 @@ io.on("connection", (socket) => {
 });
 
 
-
+// Creates a server that listens at Port 5000
 const PORT=process.env.IP || 5000;
 server.listen(PORT, () =>{
     console.log(`Server started on port ${PORT}`);

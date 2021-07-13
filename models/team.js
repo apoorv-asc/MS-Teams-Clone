@@ -1,3 +1,4 @@
+// Contains information about the various team
 const mongoose = require('mongoose');
 const TeamSchema =new mongoose.Schema({
     team_name:{
@@ -12,7 +13,8 @@ const TeamSchema =new mongoose.Schema({
     avatar:{
         type:String,
     },
-    ChatID:{type:String}
+    ChatID:{type:String},
+    host:{type:String}
 });
 
 module.exports = Team = mongoose.model('Team',TeamSchema);

@@ -1,4 +1,3 @@
-console.log("Javascript file read");
 const socket = io("/");
 const chatInputBox = document.getElementById("chat_message");
 const all_messages = document.getElementById("all_messages");

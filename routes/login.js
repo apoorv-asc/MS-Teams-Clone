@@ -12,7 +12,7 @@ var LocalStrategy        = require("passport-local");
 var passportLocalMongoose= require("passport-local-mongoose");
   
 app.use(require("express-session")({
-    secret:"Yeh Jawani Hai Deewani",
+    secret:"Yeh Jawani Hai Deewani", // key used for hashing the password
     resave:false,
     saveUninitialized:false
 }));

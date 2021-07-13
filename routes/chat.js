@@ -35,32 +35,38 @@ router.get('/',isLoggedIn,async (req,res)=>{
 // @desc    Starts a new conversation with the selected user
 // @access  Private
 router.post('/new_chat',isLoggedIn,async (req,res)=>{
+    try{
+
     
-    // Returns an unique ID which we use as the room ID for a conversation between 2 participants.
-    let id =uuidv4();
+        // Returns an unique ID which we use as the room ID for a conversation between 2 participants.
+        let id =uuidv4();
 
-    // Adds information about the new conversation in the logged in user.
-    var user1 = await UserData.findOne({email:res.locals.user.username});
-    user1.chat.unshift({
-        user:req.body.user,
-        ChatID:id
-    });
-    await user1.save();
+        // Adds information about the new conversation in the logged in user.
+        var user1 = await UserData.findOne({email:res.locals.user.username});
+        user1.chat.unshift({
+            user:req.body.user,
+            ChatID:id
+        });
+        await user1.save();
 
-    // Adds information about the new conversation in the selected user.
-    var user2 = await UserData.findOne({email:req.body.user});
-    user2.chat.unshift({
-        user:res.locals.user.username,
-        ChatID:id
-    });
-    await user2.save();
+        // Adds information about the new conversation in the selected user.
+        var user2 = await UserData.findOne({email:req.body.user});
+        user2.chat.unshift({
+            user:res.locals.user.username,
+            ChatID:id
+        });
+        await user2.save();
 
-    // Saves the UUID in Chat model.
-    var chat = new Chat({
-        ChatID:id
-    });
-    await chat.save();
-    res.redirect(`/chat/${id}`);
+        // Saves the UUID in Chat model.
+        var chat = new Chat({
+            ChatID:id
+        });
+        await chat.save();
+        res.redirect(`/chat/${id}`);
+    }catch(err){
+        console.log(err);
+        res.redirect('/chat');
+    }
 });
 
 // @route  GET chat/:id
@@ -68,33 +74,55 @@ router.post('/new_chat',isLoggedIn,async (req,res)=>{
 // @access  Private
 router.get('/:id',isLoggedIn,async (req,res)=>{
 
-    // Finds users with whom the logged in user never had a conversation
-    var newChat = await UserData.find({"chat.user":{$not:{$regex:`${res.locals.user.username}`}}});
+    try{
+        // Finds users with whom the logged in user never had a conversation
+        var newChat = await UserData.find({"chat.user":{$not:{$regex:`${res.locals.user.username}`}}});
 
-    // Finds info about the logged in user because 'chat' document present in it has list of all the user with whom the user had a conversation
-    var user = await UserData.findOne({email:res.locals.user.username});
+        // Finds info about the logged in user because 'chat' document present in it has list of all the user with whom the user had a conversation
+        var user = await UserData.findOne({email:res.locals.user.username});
 
-    // Finds the chat of the user whose ChatID = :id
-    var chat = await Chat.findOne({ChatID:req.params.id});
-    res.render('chat',{chats:user,newChat,prevChat:chat,id:req.params.id})
+        // Finds the chat of the user whose ChatID = :id
+        var chat = await Chat.findOne({ChatID:req.params.id});
+        res.render('chat',{chats:user,newChat,prevChat:chat,id:req.params.id})
+    }catch(err){
+        console.log(err);
+        res.redirect('/chat')
+    }
 })
 
 router.get('/teamchat/:team/:id',isLoggedIn,async (req,res)=>{
-    const team = await Team.findOne({team_name:req.params.team});
+    try{
+        // Finds the information of the selected team
+        const team = await Team.findOne({team_name:req.params.team});
 
-    const chat = await Chat.findOne({ChatID:team.ChatID});
+        // Finds the conversation of the selected team done till now
+        const chat = await Chat.findOne({ChatID:team.ChatID});
 
-    res.render('teamchat',{prevChat:chat,team:team,id:team.ChatID})
-
+        // Renders the page which displays the chats done till now and gives and option 
+        // to do real time chatting
+        res.render('teamchat',{prevChat:chat,team:team,id:team.ChatID})
+    }catch(err){
+        console.log(err);
+        res.redirect(`/team/${req.params.team}`);
+    }
 })
 
 router.get('/videoCallChat/:team/:id',isLoggedIn,async (req,res)=>{
-    const team = await Team.findOne({team_name:req.params.team});
+    try{
 
-    const chat = await Chat.findOne({ChatID:req.params.id});
+        // Finds the information of the selected team
+        const team = await Team.findOne({team_name:req.params.team});
 
-    res.render('teamchat',{prevChat:chat,team:team,id:req.params.id})
+        // Finds the conversation of the selected team done on a particular video call till now
+        const chat = await Chat.findOne({ChatID:req.params.id});
 
+        // Renders the page which displays the chats done till now and gives and option 
+        // to do real time chatting
+        res.render('teamchat',{prevChat:chat,team:team,id:req.params.id})
+    }catch(err){
+        console.log(err);
+        res.redirect(`/team/${req.params.team}`)
+    }
 })
 
 module.exports = router;

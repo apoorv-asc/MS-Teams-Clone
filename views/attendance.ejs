@@ -1,38 +1,55 @@
 <%- include("partials/header"); %>
 <%- include("partials/leftoptions"); %>
-<style>
-    table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
 
-td, th {
-  border: 1px solid #f38181;
-  text-align: left;
-  padding: 8px;
-}
+<div class="row">
+  <div class="col-2">
+    <div class="sidebar">
+      <div class="sidebar-wrapper">
+          <a href="#" class="nav_logo"></a>
+          <div class="nav_list">
+              <img src="<%= team.avatar %>" width="200" height="200"><br><br>
+              <h2><b><%= team.team_name %></b></h2>
+              <ul>
+                  <li><a href="/team/<%= team.team_name %>">Calls</a></li>
+                  <li><a href="/chat/teamchat/<%= team.team_name %>/<%= team.ChatID %>">Chat</a></li>
+                  <li><a class="active" href="#">Team Info</a></li>
+                  <li><a href="/settings/manage_team/<%= team.team_name %>">Manage</a></li>
+                  <li><a href="/team/leave_team/<%= team.team_name %>">Leave team</a></li>
+                </ul>
+          </div>
+      </div>
+    </div> 
+  </div>
+  <div class="col-10">
+    <p style="font-size: 400%;font-weight: 700; text-align: center;"><%= team.team_name %></p>
+    
+    <div class="container">
+    <h3>Attendance sheet</h3>
+    <table class="table table-striped table-dark">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Entry/Exit</th>
+          <th scope="col">Time Details</th>
+        </tr>
+      </thead>
+      <tbody>
+          <% var count=1; %>
+          <!-- Loops through the data recieved from the server to display the attendance -->
+          <% (meet.attndc).forEach((info)=>{ %> 
 
-tr:nth-child(even) {
-  background-color: #81f5a2;
-}
-tr:nth-child(odd) {
-  background-color: #f58181;
-}
-</style>
-<div>
-    <table>
-        <tr>
-            <th>Participants Email</th>
-            <th>Entry/Exit</th>
-            <th>Details about Entry/Exit</th>
-        </tr>
-        <% (meet.attndc).forEach((info)=>{ %> 
-        <tr>
-            <td><%= info.participant %></td>
-            <td><%= info.objective %></td>
-            <td><%= info.time %></td>
-        </tr>
-        <% }) %>
+              <tr>
+                <th scope="row"><%= count %></th>
+                <td><%= info.participant %></td>
+                <td><%= info.objective %></td>
+                <td><%= info.time %></td>
+              </tr>
+
+          <% count=count+1; }) %>
+
+      </tbody>
     </table>
+  </div>
+  </div>
 </div>

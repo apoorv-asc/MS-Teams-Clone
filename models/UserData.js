@@ -1,3 +1,4 @@
+// User's Data Modal
 const mongoose = require('mongoose');
 const UserDataSchema =new mongoose.Schema({
     username:{
@@ -16,7 +17,7 @@ const UserDataSchema =new mongoose.Schema({
         type:String,
         required:true
     },
-    reset:[Number],
+    reset:[String],
     team_name:[{
         name:{
             type:String,

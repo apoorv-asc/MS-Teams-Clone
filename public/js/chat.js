@@ -1,18 +1,14 @@
 const socket = io();
-console.log(roomId);
 
 
 // Elements
 const $messageForm = document.querySelector('#message-form')
 const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
-const $sendLocationButton = document.querySelector('#send-location')
 const $messages = document.querySelector('#messages')
 
 // Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
-// const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
-// const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 // Triggered when "Send" button is pushed
 $messageForm.addEventListener('submit', (e) => {
@@ -42,7 +38,7 @@ $messageForm.addEventListener('submit', (e) => {
     })
 })
 
-// socket.on('message', (message) => {
+// Adds the message recieved on the screen
 socket.on('Show-Message',(message)=>{
     console.log(message.username);
     console.log(message.msg);
@@ -52,7 +48,7 @@ socket.on('Show-Message',(message)=>{
         createdAt: moment(message.createdAt).format('h:mm a')
     })
     $messages.insertAdjacentHTML('beforeend', html)
-    // autoscroll()
+    autoscroll()
 })
 
 socket.emit('join', { username, roomId }, (error) => {
@@ -61,3 +57,27 @@ socket.emit('join', { username, roomId }, (error) => {
         location.href = '/'
     }
 })
+
+// AutScroll Feature
+const autoscroll = () => {
+    // New message element
+    const $newMessage = $messages.lastElementChild
+
+    // Height of the new message
+    const newMessageStyles = getComputedStyle($newMessage)
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
+
+    // Visible height
+    const visibleHeight = $messages.offsetHeight
+
+    // Height of messages container
+    const containerHeight = $messages.scrollHeight
+
+    // How far have I scrolled?
+    const scrollOffset = $messages.scrollTop + visibleHeight
+
+    if (containerHeight - newMessageHeight <= scrollOffset) {
+        $messages.scrollTop = $messages.scrollHeight
+    }
+}

@@ -13,6 +13,7 @@
         const roomId = "<%= id %>"
         const username = "<%= chats.username %>"
     </script>
+    <!-- Here only INTERNAL STYLING will work due to style weightage issue -->
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
         .left{
@@ -335,6 +336,7 @@
                 <div class="form-group">
                     <select class="form-control" name="user" id="">
                 
+                        <!-- Renders the list of users with whom we can start a conversation -->
                     <% (newChat).forEach((friend)=>{ %>
                         <% if(friend.email != user.username ){ %>
                         <option value="<%= friend.email %>"><%= friend.email %></option>
@@ -350,6 +352,7 @@
                 </ul>
                 <br><br>
                 <ul>
+                    <!-- Renders the name of all the users with whom we already had a conversation -->
                 <% if(chats !=null) { %>
                 <% (chats.chat).forEach((chat)=>{ %>
                         <li><a href="/chat/<%= chat.ChatID %>"><%= chat.user %></a></li>
@@ -400,8 +403,8 @@
         </script>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script> <!-- Used for adding the recived message to the chat screen -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script> <!-- Used for displaying the time in an user friendly approach -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/chat.js"></script>

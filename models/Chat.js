@@ -1,3 +1,4 @@
+// Contains all the chats done on various pages
 const mongoose = require('mongoose');
 const ChatScehma =new mongoose.Schema({
     ChatID:{

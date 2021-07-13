@@ -11,7 +11,7 @@
         <% (teams).forEach((team)=>{ %>
         <div class="col-sm-4 col-md-3">
             <div class="thumbnail" style="text-align: center;">
-                <img src="<%= team.avatar %>" class="rounded img-fluid">
+                <img src="<%= team.avatar %>" class="rounded img-fluid" width="200" height="200">
             <br>
                 <a href="/team/<%= team.team_name %>" class="caption" style="font-weight: 700;"><span class="btn btn-sm btn-success"><%= team.team_name %></span></a>
             </div>

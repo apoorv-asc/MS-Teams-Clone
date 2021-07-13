@@ -46,7 +46,7 @@ router.post('/new_team',isLoggedIn,async (req,res)=>{
     try{
         let id=uuidv4();
         const team=new Team({
-            team_name:req.body.team_name,avatar:req.body.avatar,ChatID:id
+            team_name:req.body.team_name,avatar:req.body.avatar,ChatID:id,host:res.locals.user.username
         })
         for(x=0;x<(req.body.members).length;x++){
             let userinfo =await UserData.findOne({email:(req.body.members)[x]});
@@ -69,11 +69,17 @@ router.post('/new_team',isLoggedIn,async (req,res)=>{
     }
 })
 
-router.get('/reset',(req,res)=>{
+// @route   GET settings/reset
+// @desc    Renders the page where the logged in user can reset the password
+// @access  Private
+router.get('/reset',isLoggedIn,(req,res)=>{
     res.render("PassReset");
 })
 
-router.post('/reset',(req,res)=>{
+// @route   POST settings/new_team
+// @desc    Resets the password
+// @access  Private
+router.post('/reset',isLoggedIn,(req,res)=>{
     User.findByUsername(res.locals.user.username).then((sanitizedUser)=>{
         if (sanitizedUser){
             sanitizedUser.setPassword(req.body.pass, function(){
@@ -84,58 +90,69 @@ router.post('/reset',(req,res)=>{
     })
 })
 
-router.get('/manage_team/:team',async (req,res)=>{
+// @route   POST settings/new_team
+// @desc    Renders the page used for editing the team
+// @access  Private
+router.get('/manage_team/:team',isLoggedIn,async (req,res)=>{
     let team = await Team.findOne({team_name:req.params.team});
     let users = await UserData.find({"team_name.name":{$not: {$regex:`${req.params.team}`}}})
     res.render('manage_team',{team:team,addUsers:users})
 })
 
-router.post('/manage_team/:team',async (req,res)=>{
-    var team=await Team.findOne({team_name:req.params.team});
-    // Change team name and avatar
-    team.team_name=req.body.new_teamname;
-    team.avatar = req.body.new_avatar;
+// @route   POST settings/new_team
+// @desc    Edits the team and redirects to homepage
+// @access  Private
+router.post('/manage_team/:team',isLoggedIn,async (req,res)=>{
+    try{
+        var team=await Team.findOne({team_name:req.params.team});
+        // Change team name and avatar
+        team.team_name=req.body.new_teamname;
+        team.avatar = req.body.new_avatar;
 
-    // Reflect team name change in UserData
-    var users=await UserData.find({"team_name.name":req.params.team});
-    users.forEach((user)=>{
-        (user.team_name).forEach((team)=>{
-            if(team.name==req.params.team)
-                team.name=req.body.new_teamname;
-        })
-    })
-
-    // Deleting members from Team
-    var cnt=0;
-    (team.members).forEach((member)=>{
-        if((member.member).includes(remove_members)){
-            (team.members).splice(cnt,cnt+1);
-        }else{
-            cnt=cnt+1;
-        }
-    })
-
-    // Deleting team from UserData
-    var cnt=0;
-    users.forEach(async (user)=>{
-        if((user.email).includes(remove_member)){
+        // Reflect team name change in UserData
+        var users=await UserData.find({"team_name.name":req.params.team});
+        users.forEach((user)=>{
             (user.team_name).forEach((team)=>{
-                if(team.name==req.body.new_teamname){
-                    (team.name).splice(cnt,cnt+1);
-                }else{
-                    cnt=cnt+1;
-                }
+                if(team.name==req.params.team)
+                    team.name=req.body.new_teamname;
             })
-        }
-        await user.save();
-    })
+        })
 
-    // Adding new member in Team
-    for(x=0;x<req.body.add_member.length;x++){
-        team.members.unshift(req.body.add_member[x])
+        // Deleting members from Team
+        var cnt=0;
+        (team.members).forEach((member)=>{
+            if((member.member).includes(remove_members)){
+                (team.members).splice(cnt,cnt+1);
+            }else{
+                cnt=cnt+1;
+            }
+        })
+
+        // Deleting team from UserData
+        var cnt=0;
+        users.forEach(async (user)=>{
+            if((user.email).includes(remove_member)){
+                (user.team_name).forEach((team)=>{
+                    if(team.name==req.body.new_teamname){
+                        (team.name).splice(cnt,cnt+1);
+                    }else{
+                        cnt=cnt+1;
+                    }
+                })
+            }
+            await user.save();
+        })
+
+        // Adding new member in Team
+        for(x=0;x<req.body.add_member.length;x++){
+            team.members.unshift(req.body.add_member[x])
+        }
+        await team.save();
+        res.redirect('/');
+    }catch(err){
+        console.log(err);
+        res.render('/');
     }
-    await team.save();
-    res.redirect('/');
 })
 
 

@@ -1,4 +1,8 @@
 <%- include("partials/header"); %>
+<script>
+    const username = "<%= user.username %>";
+    const host = "<%= teamInfo.host %>"
+</script>
 <%- include("partials/leftoptions"); %>
 
 <div class="row">
@@ -14,7 +18,11 @@
                         <li><a class="active" href="#">Calls</a></li>
                         <li><a href="/chat/teamchat/<%= teamInfo.team_name %>/<%= teamInfo.ChatID %>">Chat</a></li>
                         <li><a href="/team/info/<%= teamInfo.team_name %>">Team Info</a></li>
-                        <li><a href="/settings/manage_team/<%= teamInfo.team_name %>">Manage</a></li>
+                        <% if(user.username === teamInfo.host){ %>
+                            <li><a href="/settings/manage_team/<%= teamInfo.team_name %>">Manage</a></li>
+                        <% }else{ %>
+                            <li onclick="alert('Only host can access this');" ><a href="#">Manage</a></li>
+                        <% } %>
                         <li><a href="/team/leave_team/<%= teamInfo.team_name %>">Leave team</a></li>
                     </ul>
                 </div>
@@ -43,7 +51,7 @@
                                         </button>
                                         <div class="dropdown-menu">
                                         <a class="dropdown-item" href="/chat/videoCallChat/<%= teamInfo.team_name %>/<%= call.callID %>">Chat</a>
-                                        <a class="dropdown-item" href="/team/attndc/<%= call.id %>">Attendance </a>
+                                        <a class="dropdown-item" href="/team/attndc/<%= teamInfo.team_name %>/<%= call.id %>">Attendance </a>
                                         </div>
                                     </div>
                                 </div>
@@ -87,7 +95,7 @@
                                             </button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" href="/chat/videoCallChat/<%= teamInfo.team_name %>/<%= call.callID %>">Chat</a>
-                                            <a class="dropdown-item" href="/team/attndc/<%= call.id %>">Attendance </a>
+                                            <a class="dropdown-item" href="/team/attndc/<%= teamInfo.team_name %>/<%= call.id %>">Attendance </a>
                                             </div>
                                         </div>
                                         <br>
@@ -119,4 +127,7 @@
         location.href = "/settings/manage_team/<%= teamInfo.team_name %>";
     };
     
+    document.querySelector('#manage-btn').addEventListener('onclick', ()=>{
+        alert('Only host can access this');
+    });
 </script>
