@@ -102,8 +102,8 @@ router.post('/forgot_password',async (req,res)=>{
         var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'projectsbyasc@gmail.com',
-            pass: 'letsmakesomething'
+            user: '',
+            pass: ''
         }
         });
         let id=uuidv4();
@@ -114,7 +114,7 @@ router.post('/forgot_password',async (req,res)=>{
 
         // Details of the mail to be sent to the user trying to reset his/her password
         var mailOptions = {
-        from: 'projectsbyasc@gmail.com',
+        from: '',
         to: req.body.email,
         subject: 'Microsoft Teams Clone - Password Recovery',
         html:'Proceed to the following URL http://localhost:5000/registeration/recover/'+id+'/'+req.body.email+' to reset the password</p>'
