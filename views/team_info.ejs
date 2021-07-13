@@ -11,7 +11,7 @@
                    <h2><b><%= team.team_name %></b></h2>
                    <ul>
                        <li><a href="/team/<%= team.team_name %>">Calls</a></li>
-                       <li><a href="#">Chat</a></li>
+                       <li><a href="/chat/teamchat/<%= team.team_name %>/<%= team.ChatID %>">Chat</a></li>
                        <li><a class="active" href="#">Team Info</a></li>
                        <li><a href="/settings/manage_team/<%= team.team_name %>">Manage</a></li>
                        <li><a href="/team/leave_team/<%= team.team_name %>">Leave team</a></li>

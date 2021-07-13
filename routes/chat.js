@@ -8,6 +8,8 @@ const isLoggedIn = require('../middleware/auth'); // We make any route Private b
 
 // =================== Models ========================
 const UserData = require('../models/UserData')
+const Team = require('../models/team');
+const Chat = require('../models/Chat');
 
 // +++++++++++++++++++++++++++++++++++++++ Routes +++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -77,5 +79,22 @@ router.get('/:id',isLoggedIn,async (req,res)=>{
     res.render('chat',{chats:user,newChat,prevChat:chat,id:req.params.id})
 })
 
+router.get('/teamchat/:team/:id',isLoggedIn,async (req,res)=>{
+    const team = await Team.findOne({team_name:req.params.team});
+
+    const chat = await Chat.findOne({ChatID:team.ChatID});
+
+    res.render('teamchat',{prevChat:chat,team:team,id:team.ChatID})
+
+})
+
+router.get('/videoCallChat/:team/:id',isLoggedIn,async (req,res)=>{
+    const team = await Team.findOne({team_name:req.params.team});
+
+    const chat = await Chat.findOne({ChatID:req.params.id});
+
+    res.render('teamchat',{prevChat:chat,team:team,id:req.params.id})
+
+})
 
 module.exports = router;

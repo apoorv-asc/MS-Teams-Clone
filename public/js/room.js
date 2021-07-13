@@ -44,7 +44,7 @@ navigator.mediaDevices
 
     document.addEventListener("keydown", (e) => {
       if (e.which === 13 && chatInputBox.value != "") {
-        socket.emit("message", chatInputBox.value);
+        socket.emit("message", {msg:chatInputBox.value,user:username});
         chatInputBox.value = "";
       }
     });
@@ -52,7 +52,7 @@ navigator.mediaDevices
     socket.on("createMessage", (msg) => {
       console.log(msg);
       let li = document.createElement("li");
-      li.innerHTML = msg;
+      li.innerHTML = msg.user+":"+msg.msg;
       all_messages.append(li);
       main__chat__window.scrollTop = main__chat__window.scrollHeight;
     });

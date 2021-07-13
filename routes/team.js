@@ -10,6 +10,7 @@ const isLoggedIn = require('../middleware/auth');
 const UserData = require('../models/UserData')
 const Meet = require('../models/meet');
 const Team = require('../models/team')
+const Chat = require('../models/Chat')
 
 // ============================== Routes ==========================================
 
@@ -72,6 +73,10 @@ router.get('/:name/start_call/:username',isLoggedIn,async (req,res)=>{
             host:user.username
         });
         await meet.save();
+        
+        const chat = new Chat({ChatID:id});
+        await chat.save();
+
         // Redirects to video call page
         res.redirect(`/team/${req.params.name}/${id}`);
     }catch(err){

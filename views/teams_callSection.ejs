@@ -3,8 +3,8 @@
 
 <div class="row">
     
-     <div class="col-2"> 
-         <div class="sidebar">
+    <div class="col-2"> 
+        <div class="sidebar">
             <div class="sidebar-wrapper">
                 <a href="#" class="nav_logo"></a>
                 <div class="nav_list">
@@ -12,7 +12,7 @@
                     <h2><b><%= teamInfo.team_name %></b></h2>
                     <ul>
                         <li><a class="active" href="#">Calls</a></li>
-                        <li><a href="#">Chat</a></li>
+                        <li><a href="/chat/teamchat/<%= teamInfo.team_name %>/<%= teamInfo.ChatID %>">Chat</a></li>
                         <li><a href="/team/info/<%= teamInfo.team_name %>">Team Info</a></li>
                         <li><a href="/settings/manage_team/<%= teamInfo.team_name %>">Manage</a></li>
                         <li><a href="/team/leave_team/<%= teamInfo.team_name %>">Leave team</a></li>
@@ -28,12 +28,35 @@
 
         <h3>Ongoing Calls</h3>
         <% c=0 %>
-        <% (calls).forEach((call)=>{ %>
-            <% if(call.count>0){ %>
-                <a href="/team/<%= call.team_name %>/<%= call.callID %>">Join call started by <%= call.host %></a>
-                <br>
-            <% }else{c=c+1} %>
-        <% }) %>
+        <div class="row" style="display:flex;flex-wrap:wrap">
+            <% (calls).forEach((call)=>{ %>
+                <% if(call.count>0){ %>
+                    <div class="col-md-4">
+                        <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+                            <div class="card-header">Ongoing Call</div>
+                            <div class="card-body">
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button type="button" onclick="window.location.href='/team/<%= call.team_name %>/<%= call.callID %>'" class="btn btn-primary">Join Call</button>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Action
+                                        </button>
+                                        <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="/chat/videoCallChat/<%= teamInfo.team_name %>/<%= call.callID %>">Chat</a>
+                                        <a class="dropdown-item" href="/team/attndc/<%= call.id %>">Attendance </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <p class="card-text">Call Started by <%= call.host %></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                <% }else{c=c+1} %>
+            <% }) %>
+        </div>
         <% if(c==calls.length){ %>
         <p>No active calls</p>
 
@@ -55,7 +78,6 @@
                         <% if(call.count<=0){ %>
                             <% c=c+1 %>
                             <div class="col-md-4">
-                                <p><%= call.id %></p>
                                 <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Old Call</div>
                                     <div class="card-body">
@@ -64,7 +86,7 @@
                                             Action
                                             </button>
                                             <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#">Chat</a>
+                                                <a class="dropdown-item" href="/chat/videoCallChat/<%= teamInfo.team_name %>/<%= call.callID %>">Chat</a>
                                             <a class="dropdown-item" href="/team/attndc/<%= call.id %>">Attendance </a>
                                             </div>
                                         </div>

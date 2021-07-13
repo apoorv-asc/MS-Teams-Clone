@@ -10,6 +10,7 @@ const peerServer = ExpressPeerServer(server, {
   debug: true,
 });
 
+const moment = require('moment');
 
 const connectDB = require('./config/db');
 connectDB();
@@ -97,8 +98,18 @@ io.on("connection", (socket) => {
         socket.join(roomId);
         socket.broadcast.to(roomId).emit("user-connected", userId);
 
-        socket.on("message", (message) => {
+        socket.on("message",async (message) => {
+            var chat =await Chat.findOne({ChatID:roomId});
+            console.log(roomId);
+            chat.msg.push({
+                message:message.msg,
+                timestamp:moment().format('h:mm a'),
+                username:message.user
+            });
+            await chat.save();
+            console.log('Message Saved');
           io.to(roomId).emit("createMessage", message);
+          io.to(roomId).emit('Show-Message', {username:message.user, msg:message.msg})
         });
     });
 
@@ -109,7 +120,6 @@ io.on("connection", (socket) => {
         socket.on('sendMessage',async (data, callback) => {
             console.log(data.roomId);
             const chat =await Chat.findOne({ChatID:data.roomId});
-            console.log(chat.msg);
             chat.msg.push({
                 username:data.username,
                 message:data.message,
@@ -118,6 +128,7 @@ io.on("connection", (socket) => {
             await chat.save();
 
             io.to(data.roomId).emit('Show-Message', {username:data.username, msg:data.message})
+            io.to(data.roomId).emit("createMessage", {msg:data.message,user:data.username});
             callback()
         })
 

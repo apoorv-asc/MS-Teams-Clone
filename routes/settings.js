@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
+const { v4: uuidv4 } = require("uuid");
 
 const User=require('../models/user');
 const Team=require('../models/team');
+const Chat = require('../models/Chat');
 const UserData = require('../models/UserData');
 
 const isLoggedIn = require('../middleware/auth')
@@ -31,14 +33,9 @@ router.post('/profile',async (req,res)=>{
 // @route   GET settings/new_team
 // @desc    Creates a new Team
 // @access  Private
-router.get("/new_team",isLoggedIn,function(req,res){
-    User.find({},(err,allUsers)=>{
-        if(err)
-            console.log(err.messaage);
-        else{
-            res.render("new_team",{users:allUsers});
-        }
-    })
+router.get("/new_team",isLoggedIn,async (req,res)=>{
+    const allUsers=await User.find({});
+    res.render("new_team",{users:allUsers});
 });
 
 
@@ -47,8 +44,9 @@ router.get("/new_team",isLoggedIn,function(req,res){
 // @access  Private
 router.post('/new_team',isLoggedIn,async (req,res)=>{
     try{
+        let id=uuidv4();
         const team=new Team({
-            team_name:req.body.team_name,avatar:req.body.avatar
+            team_name:req.body.team_name,avatar:req.body.avatar,ChatID:id
         })
         for(x=0;x<(req.body.members).length;x++){
             let userinfo =await UserData.findOne({email:(req.body.members)[x]});
@@ -62,8 +60,9 @@ router.post('/new_team',isLoggedIn,async (req,res)=>{
             
             team.members.unshift({member:(req.body.members)[x]});
         }
-        team.save();
-    
+        await team.save();
+        const teamChat = new Chat({ChatID:id});
+        await teamChat.save();
         res.redirect('/')
     }catch(err){
         console.log(err+" <== Error");

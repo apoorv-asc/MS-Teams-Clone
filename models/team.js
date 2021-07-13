@@ -11,7 +11,8 @@ const TeamSchema =new mongoose.Schema({
     }],
     avatar:{
         type:String,
-    }
+    },
+    ChatID:{type:String}
 });
 
 module.exports = Team = mongoose.model('Team',TeamSchema);
