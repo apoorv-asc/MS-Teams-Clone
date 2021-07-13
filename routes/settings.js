@@ -122,18 +122,24 @@ router.post('/manage_team/:team',isLoggedIn,async (req,res)=>{
 
         // Deleting members from Team
         var cnt=0;
-        (team.members).forEach((member)=>{
-            if((member.member).includes(remove_members)){
-                (team.members).splice(cnt,cnt+1);
-            }else{
-                cnt=cnt+1;
-            }
-        })
+        if(req.body.remove_members!=undefined && !Array.isArray(req.body.remove_members))
+        req.body.remove_members = [req.body.remove_members];
+        
+        if(req.body.remove_members!=undefined){
+            (team.members).forEach((member)=>{
+                if((member.member).includes(req.body.remove_members)){
+                    (team.members).splice(cnt,cnt+1);
+                }else{
+                    cnt=cnt+1;
+                }
+            })
+        }
+
 
         // Deleting team from UserData
         var cnt=0;
         users.forEach(async (user)=>{
-            if((user.email).includes(remove_member)){
+            if((user.email).includes(req.body.remove_members)){
                 (user.team_name).forEach((team)=>{
                     if(team.name==req.body.new_teamname){
                         (team.name).splice(cnt,cnt+1);
@@ -142,13 +148,18 @@ router.post('/manage_team/:team',isLoggedIn,async (req,res)=>{
                     }
                 })
             }
-            await user.save();
+            // await user.save();
+            console.log(user);
         })
 
         // Adding new member in Team
-        for(x=0;x<req.body.add_member.length;x++){
-            team.members.unshift(req.body.add_member[x])
+        if(req.body.add_members != undefined && Array.isArray(req.body.add_members)==true){
+            (req.body.add_members).forEach((name)=>{
+                team.members.unshift({member:name})
+            })
         }
+        else if(Array.isArray(req.body.add_members)!=true)
+            team.members.unshift({member:req.body.add_members})
         await team.save();
         res.redirect('/');
     }catch(err){
