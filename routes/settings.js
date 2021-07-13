@@ -27,6 +27,7 @@ router.post('/profile',async (req,res)=>{
     }
     catch(err){
         res.send(err)
+        res.redirect('/')
     }
 })
 
@@ -66,6 +67,7 @@ router.post('/new_team',isLoggedIn,async (req,res)=>{
         res.redirect('/')
     }catch(err){
         console.log(err+" <== Error");
+        res.redirect('/')
     }
 })
 
@@ -84,7 +86,7 @@ router.post('/reset',isLoggedIn,(req,res)=>{
         if (sanitizedUser){
             sanitizedUser.setPassword(req.body.pass, function(){
                 sanitizedUser.save();
-                res.send('Password changed');
+                res.redirect('/settings/profile');
             });
         }
     })
@@ -151,7 +153,7 @@ router.post('/manage_team/:team',isLoggedIn,async (req,res)=>{
         res.redirect('/');
     }catch(err){
         console.log(err);
-        res.render('/');
+        res.redirect('/');
     }
 })
 
