@@ -110,6 +110,7 @@ router.post('/manage_team/:team',isLoggedIn,async (req,res)=>{
         // Change team name and avatar
         team.team_name=req.body.new_teamname;
         team.avatar = req.body.new_avatar;
+        await team.save();
 
         // Reflect team name change in UserData
         var users=await UserData.find({"team_name.name":req.params.team});
@@ -120,48 +121,35 @@ router.post('/manage_team/:team',isLoggedIn,async (req,res)=>{
             })
         })
 
-        // Deleting members from Team
-        var cnt=0;
-        if(req.body.remove_members!=undefined && !Array.isArray(req.body.remove_members))
-        req.body.remove_members = [req.body.remove_members];
-        
-        if(req.body.remove_members!=undefined){
-            (team.members).forEach((member)=>{
-                if((member.member).includes(req.body.remove_members)){
-                    (team.members).splice(cnt,cnt+1);
-                }else{
-                    cnt=cnt+1;
-                }
-            })
-        }
-
-
-        // Deleting team from UserData
-        var cnt=0;
-        users.forEach(async (user)=>{
-            if((user.email).includes(req.body.remove_members)){
-                (user.team_name).forEach((team)=>{
-                    if(team.name==req.body.new_teamname){
-                        (team.name).splice(cnt,cnt+1);
-                    }else{
-                        cnt=cnt+1;
-                    }
+        if(req.body.remove_members != undefined){
+            // Deleting members from Team
+            // Deleting Team name from UserData
+            if(!Array.isArray(req.body.remove_members)){
+                await Team.updateOne({team_name:req.body.new_teamname},{$pull: {members:{member:req.body.remove_members}}})
+                await UserData.updateOne({email:req.body.remove_members},{$pull:{team_name:{name:req.body.new_teamname}}})
+            }else{
+                (req.body.remove_members).forEach(async (person)=>{
+                    await Team.updateOne({team_name:req.body.new_teamname},{$pull: {members:{member:person}}})
+                    await UserData.updateOne({email:person},{$pull:{team_name:{name:req.body.new_teamname}}})
                 })
             }
-            // await user.save();
-            console.log(user);
-        })
 
-        // Adding new member in Team
-        if(req.body.add_members != undefined && Array.isArray(req.body.add_members)==true){
-            (req.body.add_members).forEach((name)=>{
-                team.members.unshift({member:name})
-            })
         }
-        else if(Array.isArray(req.body.add_members)!=true)
-            team.members.unshift({member:req.body.add_members})
-        await team.save();
-        res.redirect('/');
+
+        if(req.body.add_members != undefined){
+            // Adding members to team
+            // Adding Team Name in UserData
+            if(!Array.isArray(req.body.add_members)){
+                await Team.updateOne({team_name:req.body.new_teamname},{$push:{members:{member:req.body.add_members}}})
+                await UserData.updateOne({email:req.body.add_members},{$push:{team_name:{name:req.body.new_teamname}}})
+            }else{
+                (req.body.add_members).forEach(async (person)=>{
+                    await Team.updateOne({team_name:req.body.new_teamname},{$push:{members:{member:person}}});
+                    await UserData.updateOne({email:person},{$push:{team_name:{name:req.body.new_teamname}}})
+                })
+            }
+        }
+        res.redirect(`/`);
     }catch(err){
         console.log(err);
         res.redirect('/');
