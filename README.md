@@ -32,7 +32,12 @@ Once you have made a cluster, click on connect *Connect your Application*. It wi
 Replace <password> present in the Application String with the password for your user. 
 
 4. Now open registeration.js file present inside the routes folder. We are sending links to users on mail who are trying to retrieve their password. In order to do this,
-we are using NodeMailer. On line 105 and 117 you need to enter the email ID which you want to use to the mails and on line 106, you want to enter its password.
+we are using NodeMailer. On line 105 and 117 you need to enter the email ID which you want to use to the mails and on line 106, you want to enter its password. Besides this,
+make sure you turn on less secured app access for that particular Gmail Account by going to :
+    ```
+    https://myaccount.google.com/u/2/lesssecureapps
+    ```
+    
 
 5. Once you have done this, you'll be ready to run the project. Presently, the project is running on port 5000. At some point if you decide to change the port, make sure 
 to change it in room.js file present in public/js directory
